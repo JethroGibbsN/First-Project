@@ -96,34 +96,40 @@ app.get('/api/getDashboardContent', (req,res) =>{
 });
 app.use(bodyParser.json());
 
-app.get('/api/signin', (req, res) => {
+app.post('/api/signin', (req, res) => {
     var Users = [
         {
-            email: 'abc',
+            email: 'abc@example.com',
             password: 'abc'
         },
         {
-            email:'xyz',
+            email:'xyz@example.com',
             password:'xyz'
         }
     ];
+    var userFound= false;
     console.log(Users);
     if(!req.body.email || !req.body.password){
-        req.status(400)
-       res.json({message: "Please enter both email and password"});
-    } else {
+        res.status(400)
+        res.json({message: "Please enter both email and password"});
+    }    
+    else {
        Users.forEach((user) => {
           if(user.email === req.body.email && user.password === req.body.password){
-             res.status(200)
-             res.json({message: "Logged in successfully "})
+            userFound=true;
+            res.status(200);
+            res.json({message: "Logged in successfully "});
           }
        });
-       res.status(401)
-       res.json({message: "Invalid credentials!"});
+       if(userFound === false)
+            {res.status(401)
+            res.json({message: "Invalid credentials!"});
+            }
+       
     }
     console.log('Sent Signin content')
  });
-
+ 
 app.get('*', (req,res) =>{
     console.log(__dirname)
     res.sendFile(path.resolve(__dirname, '../build/index.html'));
